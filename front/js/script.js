@@ -1,18 +1,17 @@
-//Récupération de la balise qui accueillera les produits
-const product = document.getElementById('items');
-console.log(product)
-
-// Récupération des produits depuis l'API HTTP
+//Récupération des produits depuis l'API HTTP
 fetch("http://localhost:3000/api/products")
-  .then((response) => response.json())
-  .then((data) => sofa(data))
-  .catch((error) => console.log(error));
+  .then(response => response.json())
+  .then(data => showElement(data))
+  .catch(error => console.log(error));
 
-
-const sofa = function (data) {
+//Affichage des canapés 
+function showElement (data) {
     console.log(data);
     for (let i = 0; i< data.length; i++) {
         //Création et rattachement des éléments du DOM 
+        const product = document.getElementById('items');
+        console.log(product)
+
         const linkElement = document.createElement("a");
         linkElement.href = "product.html?id=" + data[i]._id;
         product.appendChild(linkElement);
