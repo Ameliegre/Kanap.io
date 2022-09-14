@@ -10,6 +10,7 @@ fetch("http://localhost:3000/api/products/" + id)
 
 //Afficher un produit avec son détail
 function showElementID(data) {
+    console.log(data)
     const logoElement = document.querySelector('.item__img');
     const imgLogoElement = document.createElement('img');
     imgLogoElement.src = '../images/logo.png';
@@ -24,6 +25,14 @@ function showElementID(data) {
     descElement.innerHTML = data.description; 
 
     //Liste déroulante des couleurs
+    let colorSelect = document.getElementById('colors');
+
+    data.colors.forEach(colors => {
+        let optioncolorsElement = document.createElement('option');
+        optioncolorsElement.innerHTML= colors;
+        optioncolorsElement.value = colors;
+        colorSelect.appendChild(optioncolorsElement);
+    });
 }
 
-//Evenement click ajout au panier
+//Ajout au panier et au localStorage
