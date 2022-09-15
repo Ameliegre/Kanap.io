@@ -35,4 +35,3 @@ function showElementID(data) {
     });
 }
 
-//Ajout au panier et au localStorage
