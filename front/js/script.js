@@ -39,5 +39,4 @@ function createProductListElement (product) {
   articleElement.appendChild(descElement);
 
   return linkElement;
-
 }
