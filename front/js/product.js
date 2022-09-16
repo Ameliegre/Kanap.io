@@ -35,14 +35,14 @@ function displayProductId(products) {
   addToCart(products);
 }
 
-//Ajouter un produit au panier
+//Activation de l'evenement ajout d'un produit au panier
 function addToCart(products) {
   const btn = document.getElementById('addToCart');
   const quantityPicked = document.getElementById('quantity');
   
   //Initialisation du bouton "Ajout au panier"
   btn.addEventListener('click',() => {  
-    if (colors.value !='' && quantityPicked.value > 0 && quantityPicked.value <=100 && quantityPicked.value != 0){
+    if (colors.value !='' && quantityPicked.value > 0 && quantityPicked.value <=100){
 
     // Récupération du produit avec le choix de couleur et de la quantité
     let quantityChoice = quantityPicked.value;
@@ -50,14 +50,15 @@ function addToCart(products) {
     
     let productChoice = {
       id : id,
+      name : products.name,
       quantity : Number(quantityChoice),
       color : colorChoice,
     };
-     
-    alert('Votre commande a été ajouté au panier avec succès');
-
-    //Initialisation du local storage
-    let productInLocalStorage = JSON.parse(localStorage.getItem('products'));
+    
+    const popupConfirmation = (window.confirm(`L\'article ${products.name} a été ajouté au panier avec succès. Voulez-vous consulter le panier ? Si oui , cliquer sur OK.` ))
+    window.location.href ="cart.html";
+    
+    addLocalStorage(productChoice);
 
     } else if (colors.value ==='' ){
       alert('Veuillez selectionner une couleur');
@@ -66,12 +67,21 @@ function addToCart(products) {
       alert('Veuillez inscrire une quantité entre 1 et 100')
     }
   })
-  addLocalStorage();
 }
 
-
 //Importation dans le local storage 
-function addLocalStorage () {
-
+function addLocalStorage (productChoice) {
+  //Initialisation du local storage
+  let productInLocalStorage = JSON.parse(localStorage.getItem('products'));
+  // Si il y a déjà un produit enregistré
+  if (productInLocalStorage){
+    productInLocalStorage.push(productChoice);
+    localStorage.setItem('products',JSON.stringify(productInLocalStorage));
+  } else {
+  // si il n'y a aucun produit enregistré  
+    productInLocalStorage =[];
+    productInLocalStorage.push(productChoice);
+    localStorage.setItem('products',JSON.stringify(productInLocalStorage));
+  }
 }
 
