@@ -12,10 +12,9 @@ fetch("http://localhost:3000/api/products/" + id)
 function displayProductId(products) {
   const logoElement = document.querySelector('.item__img');
   const imgLogoElement = document.createElement('img');
-  imgLogoElement.src = '../images/logo.png';
-  imgLogoElement.alt = 'Photographie d\'un canapé';
+  imgLogoElement.src = products.imageUrl;
+  imgLogoElement.alt = products.altTxt;
   logoElement.appendChild(imgLogoElement);
-
   const titleElement = document.getElementById('title');
   titleElement.innerHTML = products.name;
   const priceElement = document.getElementById('price');
@@ -47,16 +46,12 @@ function addToCart(products) {
     // Récupération du produit avec le choix de couleur et de la quantité
     let quantityChoice = quantityPicked.value;
     let colorChoice = colors.value;
-    
     let productChoice = {
       id : id,
       name : products.name,
       quantity : Number(quantityChoice),
       color : colorChoice,
     };
-    
-    const popupConfirmation = (window.confirm(`L\'article ${products.name} a été ajouté au panier avec succès. Voulez-vous consulter le panier ? Si oui , cliquer sur OK.` ))
-    window.location.href ="cart.html";
     
     addLocalStorage(productChoice);
 
@@ -71,17 +66,33 @@ function addToCart(products) {
 
 //Importation dans le local storage 
 function addLocalStorage (productChoice) {
-  //Initialisation du local storage
   let productInLocalStorage = JSON.parse(localStorage.getItem('products'));
-  // Si il y a déjà un produit enregistré
-  if (productInLocalStorage){
-    productInLocalStorage.push(productChoice);
-    localStorage.setItem('products',JSON.stringify(productInLocalStorage));
-  } else {
-  // si il n'y a aucun produit enregistré  
+
+  // si le panier est vide 
+  if (productInLocalStorage == null) {
     productInLocalStorage =[];
     productInLocalStorage.push(productChoice);
     localStorage.setItem('products',JSON.stringify(productInLocalStorage));
+    alert('Produit ajouté au panier avec succès');
+  } 
+  
+  // si le panier contient des produits differents ou des produits avec le meme id et couleur
+  if (productInLocalStorage != null ){
+
+    const ifExists = productInLocalStorage.find(
+      (element) =>
+        element.id == productChoice.id &&
+        element.color == productChoice.color
+    );
+    if (ifExists) {
+      ifExists.quantity = ifExists.quantity + productChoice.quantity;
+      localStorage.setItem("products", JSON.stringify(productInLocalStorage));
+      productInLocalStorage.push(productChoice);
+      alert('Produit ajouté au panier avec succès');
+    } else {
+      productInLocalStorage.push(productChoice);
+      localStorage.setItem('products',JSON.stringify(productInLocalStorage));
+      alert('Produit ajouté au panier avec succès');
+    }
   }
 }
-
