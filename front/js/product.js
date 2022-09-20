@@ -51,11 +51,14 @@ function addToCart(products) {
       name : products.name,
       quantity : Number(quantityChoice),
       color : colorChoice,
+      price : products.price,
+      img : products.imageUrl,
+      alt : products.altTxt,
     };
     
     addLocalStorage(productChoice);
 
-    } else if (colors.value ==='' ){
+    } else if (colors.value ===''){
       alert('Veuillez selectionner une couleur');
 
     } else if (quantityPicked.value <= 0 || quantityPicked.value > 100 ) {
@@ -67,6 +70,7 @@ function addToCart(products) {
 //Importation dans le local storage 
 function addLocalStorage (productChoice) {
   let productInLocalStorage = JSON.parse(localStorage.getItem('products'));
+  console.log(productInLocalStorage);
 
   // si le panier est vide 
   if (productInLocalStorage == null) {
@@ -78,7 +82,6 @@ function addLocalStorage (productChoice) {
   
   // si le panier contient des produits differents ou des produits avec le meme id et couleur
   if (productInLocalStorage != null ){
-
     const ifExists = productInLocalStorage.find(
       (element) =>
         element.id == productChoice.id &&
@@ -89,10 +92,10 @@ function addLocalStorage (productChoice) {
       localStorage.setItem("products", JSON.stringify(productInLocalStorage));
       productInLocalStorage.push(productChoice);
       alert('Produit ajouté au panier avec succès');
-    } else {
+      } else {
       productInLocalStorage.push(productChoice);
       localStorage.setItem('products',JSON.stringify(productInLocalStorage));
       alert('Produit ajouté au panier avec succès');
-    }
+    } 
   }
 }
