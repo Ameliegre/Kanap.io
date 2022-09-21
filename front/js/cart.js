@@ -1,17 +1,17 @@
 let fromLocalStorage = JSON.parse(localStorage.getItem('products'));
-console.log(fromLocalStorage);
-
 const cartContainer = document.getElementById('cart__items');
-console.log(cartContainer);
-    
 
-for (let product of fromLocalStorage) {
-    const articleElement = createCartList(product);
-    cartContainer.appendChild(articleElement);
-}       
+displayCartList();
 
+function displayCartList (product) {
+        
+    for (let product of fromLocalStorage) {
+        const articleElement = createCartList(product);
+        cartContainer.appendChild(articleElement);
+    }  
 
-
+}
+     
 function createCartList (product) {
 
     // Body 
@@ -94,4 +94,23 @@ function createCartList (product) {
     return articleElement;
 }
 
-    
+//event listener sur la modification de la quantité
+
+//Bouton supprimer
+
+//Affichage et calcul de la somme Total des articles 
+function SumCart (product) {  
+let listTotalPrice = [];
+ 
+for (product of fromLocalStorage) {
+    priceInCart = product.price;
+    listTotalPrice.push(priceInCart);
+}
+
+const reducer = (accumulator, currentValue) => accumulator + currentValue;
+const totalPrice = listTotalPrice.reduce(reducer,0);
+const totalPriceElement = document.getElementById('totalPrice');
+totalPriceElement.innerHTML = totalPrice;
+}
+
+SumCart();
