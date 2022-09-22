@@ -41,7 +41,15 @@ function addToCart(products) {
   
   //Initialisation du bouton "Ajout au panier"
   btn.addEventListener('click',() => {  
-    if (colors.value !='' && quantityPicked.value > 0 && quantityPicked.value <=100){
+    if (colors.value ===''){
+      alert('Veuillez selectionner une couleur');
+      return
+    }
+
+    if (quantityPicked.value <= 0 || quantityPicked.value > 100 ) {
+      alert('Veuillez inscrire une quantité entre 1 et 100')
+      return
+    }
 
     // Récupération du produit avec le choix de couleur et de la quantité
     let quantityChoice = quantityPicked.value;
@@ -55,15 +63,9 @@ function addToCart(products) {
       img : products.imageUrl,
       alt : products.altTxt,
     };
-    
+      
     addLocalStorage(productChoice);
 
-    } else if (colors.value ===''){
-      alert('Veuillez selectionner une couleur');
-
-    } else if (quantityPicked.value <= 0 || quantityPicked.value > 100 ) {
-      alert('Veuillez inscrire une quantité entre 1 et 100')
-    }
   })
 }
 
@@ -73,19 +75,16 @@ function addLocalStorage (productChoice) {
   console.log(productInLocalStorage);
 
   // si le panier est vide 
-  if (productInLocalStorage == null) {
+  if (productInLocalStorage === null) {
     productInLocalStorage =[];
     productInLocalStorage.push(productChoice);
     localStorage.setItem('products',JSON.stringify(productInLocalStorage));
     alert('Produit ajouté au panier avec succès');
-  } 
-  
-  // si le panier contient des produits differents ou des produits avec le meme id et couleur
-  if (productInLocalStorage != null ){
+  } else { // si le panier contient des produits differents ou des produits avec le meme id et couleur
     const ifExists = productInLocalStorage.find(
       (element) =>
-        element.id == productChoice.id &&
-        element.color == productChoice.color
+        element.id === productChoice.id &&
+        element.color === productChoice.color
     );
     if (ifExists) {
       ifExists.quantity = ifExists.quantity + productChoice.quantity;

@@ -1,9 +1,11 @@
 let fromLocalStorage = JSON.parse(localStorage.getItem('products'));
 const cartContainer = document.getElementById('cart__items');
+console.log(cartContainer);
 
 displayCartList();
+SumCart();
 
-function displayCartList (product) {
+function displayCartList () {
         
     for (let product of fromLocalStorage) {
         const articleElement = createCartList(product);
@@ -113,4 +115,3 @@ const totalPriceElement = document.getElementById('totalPrice');
 totalPriceElement.innerHTML = totalPrice;
 }
 
-SumCart();
