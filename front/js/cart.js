@@ -1,9 +1,12 @@
 let fromLocalStorage = JSON.parse(localStorage.getItem('products'));
 const cartContainer = document.getElementById('cart__items');
 console.log(cartContainer);
+console.log(fromLocalStorage);
 
 displayCartList();
+totalQuantity();
 SumCart();
+
 
 function displayCartList () {
         
@@ -11,7 +14,6 @@ function displayCartList () {
         const articleElement = createCartList(product);
         cartContainer.appendChild(articleElement);
     }  
-
 }
      
 function createCartList (product) {
@@ -96,22 +98,36 @@ function createCartList (product) {
     return articleElement;
 }
 
-//event listener sur la modification de la quantité
-
-//Bouton supprimer
-
-//Affichage et calcul de la somme Total des articles 
-function SumCart (product) {  
-let listTotalPrice = [];
- 
-for (product of fromLocalStorage) {
-    priceInCart = product.price;
-    listTotalPrice.push(priceInCart);
+// Affiche la quantité total d'articles
+function totalQuantity() {
+    let totalQuantity = document.getElementById('totalQuantity');
+    let quantitiesProduct = document.querySelectorAll('.itemQuantity');
+    let totalQuantities = 0;
+    quantitiesProduct.forEach(qte =>{
+        totalQuantities += Number(qte.value);
+    })
+    return totalQuantity.innerHTML = totalQuantities;
 }
 
-const reducer = (accumulator, currentValue) => accumulator + currentValue;
-const totalPrice = listTotalPrice.reduce(reducer,0);
-const totalPriceElement = document.getElementById('totalPrice');
-totalPriceElement.innerHTML = totalPrice;
+// Affiche le prix total d'articles
+function SumCart () {  
+    let listTotalPrice = [];
+     
+    for (product of fromLocalStorage) {
+        priceInCart = product.price * product.quantity;
+        listTotalPrice.push(priceInCart);
+    }
+    
+    const reducer = (accumulator, currentValue) => accumulator + currentValue;
+    const totalPrice = listTotalPrice.reduce(reducer,0);
+    const totalPriceElement = document.getElementById('totalPrice');
+    totalPriceElement.innerHTML = totalPrice;
 }
 
+//Activation bouton supprimer
+function deleteItem () {
+    const btnDelete = document.getElementsByClassName('.deleteItem');
+    console.log(btnDelete);
+};
+
+deleteItem ();
