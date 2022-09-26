@@ -3,8 +3,10 @@ const cartContainer = document.getElementById('cart__items');
 console.log(fromLocalStorage);
 
 displayCartList();
+modifyQtt();
 totalQuantity();
 sumCart();
+deleteItem();
 
 
 //Afficher les produits selectionnés
@@ -100,6 +102,26 @@ function createCartList (product) {
     return articleElement;
 }
 
+//Modification de la quantité
+function modifyQtt() {
+    let qttModif = document.getElementsByClassName("itemQuantity");
+
+    for (let j = 0; j < qttModif.length; j++) {
+        qttModif[j].addEventListener('change', () => {
+            //let productInCart = localStorage[j];
+            let findArticle = qttModif[j].closest("article");
+            let productId = findArticle.dataset.id;
+            let productColor = findArticle.dataset.color;
+            let productToUpdate = fromLocalStorage.find(el => el.id == productId && el.color == productColor);
+            if (productToUpdate) {
+                productToUpdate.quantity = qttModif[j].valueAsNumber;
+                localStorage.setItem("products",JSON.stringify(fromLocalStorage));
+            }
+            location.reload();
+        })
+    }
+}  
+
 // Affichage de la quantité total d'articles
 function totalQuantity() {
     let totalQuantity = document.getElementById('totalQuantity');
@@ -128,18 +150,18 @@ function sumCart () {
     totalPriceElement.innerHTML = totalPrice;
 }
 
-
 // Suppression d'un produit
 function deleteItem () {
     const btnDelete = document.getElementsByClassName("deleteItem");
 
     for (let i = 0; i < btnDelete.length; i++) {
-        btnDelete[i].addEventListener("click", (event) => {
+        btnDelete[i].addEventListener("click", () => {
     
           let findArticle = btnDelete[i].closest("article");
           let productToDelete = fromLocalStorage.indexOf(fromLocalStorage[i]);
           fromLocalStorage.splice(productToDelete, 1);
           findArticle.remove();
+
          if (localStorage != undefined) {
             localStorage.setItem("products",JSON.stringify(fromLocalStorage));
             } else {
@@ -151,30 +173,4 @@ function deleteItem () {
       }
 }
 
-deleteItem();
-
-
-//Modification de la quantité
-function modifyQtt() {
-    let qttModif = document.querySelectorAll(".itemQuantity");
-
-    for (let k = 0; k < qttModif.length; k++){
-        qttModif[k].addEventListener("change" , (event) => {
-            event.preventDefault();
-
-            //Selection de l'element à modifier en fonction de son id ET sa couleur
-            let quantityModif = produitLocalStorage[k].quantiteProduit;
-            let qttModifValue = qttModif[k].valueAsNumber;
-            
-            const resultFind = produitLocalStorage.find((el) => el.qttModifValue !== quantityModif);
-
-            resultFind.quantiteProduit = qttModifValue;
-            produitLocalStorage[k].quantiteProduit = resultFind.quantiteProduit;
-
-            localStorage.setItem("products", JSON.stringify(fromLocalStorage));
-        
-            location.reload();
-        })
-    }
-}
-modifyQtt();
+  
