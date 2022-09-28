@@ -108,11 +108,12 @@ function modifyQtt() {
 
     for (let j = 0; j < qttModif.length; j++) {
         qttModif[j].addEventListener('change', () => {
-            //let productInCart = localStorage[j];
+            
             let findArticle = qttModif[j].closest("article");
             let productId = findArticle.dataset.id;
             let productColor = findArticle.dataset.color;
             let productToUpdate = fromLocalStorage.find(el => el.id == productId && el.color == productColor);
+            
             if (productToUpdate) {
                 productToUpdate.quantity = qttModif[j].valueAsNumber;
                 localStorage.setItem("products",JSON.stringify(fromLocalStorage));
@@ -122,7 +123,7 @@ function modifyQtt() {
     }
 }  
 
-// Affichage de la quantité total d'articles
+// Affichage de la quantité totale d'articles
 function totalQuantity() {
     let totalQuantity = document.getElementById('totalQuantity');
     let quantitiesProduct = document.querySelectorAll('.itemQuantity');
@@ -131,8 +132,6 @@ function totalQuantity() {
         totalQuantities += Number(qte.value);
     })
     return totalQuantity.innerHTML = totalQuantities;
-
-    deleteItem();
 }
 
 // Affichage du prix total d'articles
@@ -173,4 +172,93 @@ function deleteItem () {
       }
 }
 
-  
+// Validation données formulaire
+function checkInputForm () {
+    const form = document.querySelector(".cart__order__form");
+
+    //Verification de la saisie du prénom
+    let firstName = document.getElementById('firstName');
+    let firstNameError = document.getElementById('firstNameErrorMsg');
+    let regFirstName = /^[a-zA-Z ]{2,30}$/;
+
+    form.firstName.addEventListener("change", function (e) {
+        let value = e.target.value;
+        if (regFirstName.test(value)) {
+            firstNameError.innerHTML = "";
+        } else {
+            firstNameError.innerHTML =
+            "Champ invalide, veuillez vérifier votre prénom.";
+        }
+    });
+
+    //Verification de la saisie du nom
+    let lastName = document.getElementById('lastName');
+    let lastNameError = document.getElementById('lastNameErrorMsg');
+    let regLastName = /^[a-zA-Z ]{2,30}$/;
+
+    form.lastName.addEventListener("change", function (e) {
+        let value = e.target.value;
+        if (regLastName.test(value)) {
+            lastNameError.innerHTML = "";
+        } else {
+            lastNameError.innerHTML =
+            "Champ invalide, veuillez vérifier votre nom.";
+        }
+    });
+
+    //Verification de la saisie de l'addresse postale
+    let address = document.getElementById('address');
+    let addressError = document.getElementById('addressErrorMsg');
+    let regAddress = /^[a-zA-Z ]{2,30}$/;
+
+    form.address.addEventListener("change", function (e) {
+        let value = e.target.value;
+        if (regAddress.test(value)) {
+            addressError.innerHTML = "";
+        } else {
+            addressError.innerHTML =
+            "Champ invalide, veuillez vérifier votre adresse.";
+        }
+    });
+
+    //Verification de la saisie de la ville
+    let city = document.getElementById('city');
+    let cityError = document.getElementById('cityErrorMsg');
+    let regCity = /^[a-zA-Z ]{2,30}$/;
+
+    form.city.addEventListener("change", function (e) {
+        let value = e.target.value;
+        if (regCity.test(value)) {
+            cityError.innerHTML = "";
+        } else {
+            cityError.innerHTML =
+            "Champ invalide, veuillez vérifier votre ville.";
+        }
+    });
+
+    //Verification de la saisie de l'adresse mail
+    let email = document.getElementById('email');
+    let emailError = document.getElementById('emailErrorMsg');
+    let regEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+
+    form.email.addEventListener("change", function (e) {
+        let value = e.target.value;
+        if (regEmail.test(value)) {
+            emailError.innerHTML = "";
+        } else {
+            emailError.innerHTML =
+            "Champ invalide, veuillez vérifier votre ville.";
+        }
+    });
+
+}
+
+function SubmitForm () {
+    checkInputForm ()
+
+    const order = document.getElementById('order');
+
+}
+
+    
+SubmitForm ()

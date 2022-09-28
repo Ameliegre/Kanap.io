@@ -4,8 +4,6 @@ fetch("http://localhost:3000/api/products")
   .then(products => displayProductList (products))
   .catch(error => console.log(error));
 
- 
-
 //Affichage des canapés 
 function displayProductList (products) {
     const productContainer = document.getElementById('items');
