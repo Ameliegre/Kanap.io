@@ -16,11 +16,11 @@ function displayProductId(products) {
   imgLogoElement.alt = products.altTxt;
   logoElement.appendChild(imgLogoElement);
   const titleElement = document.getElementById('title');
-  titleElement.innerHTML = products.name;
+  titleElement.textContent = products.name;
   const priceElement = document.getElementById('price');
-  priceElement.innerHTML = products.price;
+  priceElement.textContent = products.price;
   const descElement = document.getElementById('description');
-  descElement.innerHTML = products.description; 
+  descElement.textContent = products.description; 
 
   //Liste déroulante des couleurs
   let colorSelect = document.getElementById('colors');

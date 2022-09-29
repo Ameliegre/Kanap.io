@@ -115,10 +115,11 @@ function modifyQtt() {
             let productToUpdate = fromLocalStorage.find(el => el.id == productId && el.color == productColor);
             
             if (productToUpdate) {
-                productToUpdate.quantity = qttModif[j].valueAsNumber;
+                productToUpdate.quantity = Math.max(qttModif[j].valueAsNumber,1);
                 localStorage.setItem("products",JSON.stringify(fromLocalStorage));
             }
-            location.reload();
+            sumCart ();
+            totalQuantity();
         })
     }
 }  
@@ -162,26 +163,26 @@ function deleteItem () {
           findArticle.remove();
 
          if (localStorage != undefined) {
-            localStorage.setItem("products",JSON.stringify(fromLocalStorage));
+                localStorage.setItem("products",JSON.stringify(fromLocalStorage));
             } else {
-            localStorage.clear();
+                localStorage.clear();
             }
-          alert("Produit supprimé du panier");
-          location.reload();
+            alert("Produit supprimé du panier");
+            sumCart ();
+            totalQuantity();
         });
       }
 }
 
 // Validation données formulaire
 function checkInputForm () {
-    const form = document.querySelector(".cart__order__form");
 
     //Verification de la saisie du prénom
     let firstName = document.getElementById('firstName');
     let firstNameError = document.getElementById('firstNameErrorMsg');
-    let regFirstName = /^[a-zA-Z ]{2,30}$/;
+    let regFirstName = /^[^<>]{3,20}$/;
 
-    form.firstName.addEventListener("change", function (e) {
+    firstName.addEventListener("change", function (e) {
         let value = e.target.value;
         if (regFirstName.test(value)) {
             firstNameError.innerHTML = "";
@@ -194,9 +195,9 @@ function checkInputForm () {
     //Verification de la saisie du nom
     let lastName = document.getElementById('lastName');
     let lastNameError = document.getElementById('lastNameErrorMsg');
-    let regLastName = /^[a-zA-Z ]{2,30}$/;
+    let regLastName = /^[^<>]{3,20}$/;
 
-    form.lastName.addEventListener("change", function (e) {
+    lastName.addEventListener("change", function (e) {
         let value = e.target.value;
         if (regLastName.test(value)) {
             lastNameError.innerHTML = "";
@@ -206,12 +207,12 @@ function checkInputForm () {
         }
     });
 
-    //Verification de la saisie de l'addresse postale
+    //Verification de la saisie de l'adresse postale
     let address = document.getElementById('address');
     let addressError = document.getElementById('addressErrorMsg');
-    let regAddress = /^[a-zA-Z ]{2,30}$/;
+    let regAddress = /^[^<>]{5,50}$/;
 
-    form.address.addEventListener("change", function (e) {
+    address.addEventListener("change", function (e) {
         let value = e.target.value;
         if (regAddress.test(value)) {
             addressError.innerHTML = "";
@@ -224,9 +225,9 @@ function checkInputForm () {
     //Verification de la saisie de la ville
     let city = document.getElementById('city');
     let cityError = document.getElementById('cityErrorMsg');
-    let regCity = /^[a-zA-Z ]{2,30}$/;
+    let regCity = /^[^<>]{2,30}$/;
 
-    form.city.addEventListener("change", function (e) {
+    city.addEventListener("change", function (e) {
         let value = e.target.value;
         if (regCity.test(value)) {
             cityError.innerHTML = "";
@@ -241,7 +242,7 @@ function checkInputForm () {
     let emailError = document.getElementById('emailErrorMsg');
     let regEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
-    form.email.addEventListener("change", function (e) {
+    email.addEventListener("change", function (e) {
         let value = e.target.value;
         if (regEmail.test(value)) {
             emailError.innerHTML = "";
@@ -251,12 +252,34 @@ function checkInputForm () {
         }
     });
 
+    let inputs = {
+        firstName : firstName.value,
+        lastName : lastName.value,
+        adress : address.value,
+        city : city.value,
+        email : email.value,
+    }
+    return inputs;
+
 }
 
+//Activation de l'evenement Commander
 function SubmitForm () {
-    checkInputForm ()
+    
+    const form = document.querySelector('.cart__order__form');
+    //order.method = "post";
+    //order.href = "confirmation.html";
+    
 
-    const order = document.getElementById('order');
+    //Récupération des données saisies du formulaire
+    form.addEventListener("submit", (e) => {
+        
+        e.preventDefault();
+        
+        let inputs = checkInputForm();
+        console.log(inputs)
+
+    })
 
 }
 

@@ -30,12 +30,12 @@ function createProductListElement (product) {
 
   const nameElement = document.createElement("h3");
   nameElement.classList.add("productName");
-  nameElement.innerHTML = product.name;
+  nameElement.textContent = product.name;
   articleElement.appendChild(nameElement);
 
   const descElement = document.createElement("p");
   descElement.classList.add("productDescription");
-  descElement.innerHTML = product.description;
+  descElement.textContent = product.description;
   articleElement.appendChild(descElement);
 
   return linkElement;
