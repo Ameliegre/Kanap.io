@@ -1,6 +1,5 @@
 let fromLocalStorage = JSON.parse(localStorage.getItem('products'));
 const cartContainer = document.getElementById('cart__items');
-console.log(fromLocalStorage);
 
 displayCartList();
 modifyQtt();
@@ -17,6 +16,7 @@ function displayCartList () {
         cartContainer.appendChild(articleElement);
     }  
     
+    SubmitForm()
 }
 
 //Création des produits du panier dans le DOM
@@ -183,9 +183,10 @@ function checkInputForm () {
     let regFirstName = /^[^<>]{3,20}$/;
 
     firstName.addEventListener("change", function (e) {
-        let value = e.target.value;
-        if (regFirstName.test(value)) {
-            firstNameError.innerHTML = "";
+        let firstNameValid = e.target.value;
+        if (regFirstName.test(firstNameValid)) {
+           firstNameError.innerHTML ="";
+           return true;
         } else {
             firstNameError.innerHTML =
             "Champ invalide, veuillez vérifier votre prénom.";
@@ -198,9 +199,10 @@ function checkInputForm () {
     let regLastName = /^[^<>]{3,20}$/;
 
     lastName.addEventListener("change", function (e) {
-        let value = e.target.value;
-        if (regLastName.test(value)) {
+        let lastNameValid = e.target.value;
+        if (regLastName.test(lastNameValid)) {
             lastNameError.innerHTML = "";
+            return true;
         } else {
             lastNameError.innerHTML =
             "Champ invalide, veuillez vérifier votre nom.";
@@ -213,9 +215,10 @@ function checkInputForm () {
     let regAddress = /^[^<>]{5,50}$/;
 
     address.addEventListener("change", function (e) {
-        let value = e.target.value;
-        if (regAddress.test(value)) {
+        let addressValid = e.target.value;
+        if (regAddress.test(addressValid)) {
             addressError.innerHTML = "";
+            return true;
         } else {
             addressError.innerHTML =
             "Champ invalide, veuillez vérifier votre adresse.";
@@ -228,9 +231,10 @@ function checkInputForm () {
     let regCity = /^[^<>]{2,30}$/;
 
     city.addEventListener("change", function (e) {
-        let value = e.target.value;
-        if (regCity.test(value)) {
+        let cityValid = e.target.value;
+        if (regCity.test(cityValid)) {
             cityError.innerHTML = "";
+            return true;
         } else {
             cityError.innerHTML =
             "Champ invalide, veuillez vérifier votre ville.";
@@ -243,45 +247,75 @@ function checkInputForm () {
     let regEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
     email.addEventListener("change", function (e) {
-        let value = e.target.value;
-        if (regEmail.test(value)) {
+        let emailValid = e.target.value;
+        if (regEmail.test(emailValid)) {
             emailError.innerHTML = "";
+            return true;
         } else {
             emailError.innerHTML =
-            "Champ invalide, veuillez vérifier votre ville.";
+            "Champ invalide, veuillez vérifier votre adresse mail.";
         }
     });
 
-    let inputs = {
+    let contact = {
         firstName : firstName.value,
         lastName : lastName.value,
         adress : address.value,
         city : city.value,
         email : email.value,
     }
-    return inputs;
+    return contact;
 
 }
 
 //Activation de l'evenement Commander
 function SubmitForm () {
-    
-    const form = document.querySelector('.cart__order__form');
-    //order.method = "post";
-    //order.href = "confirmation.html";
-    
+    //Créer fonction qui controle si tous les elements sont bien ecrit
+    checkInputForm()
 
-    //Récupération des données saisies du formulaire
-    form.addEventListener("submit", (e) => {
-        
-        e.preventDefault();
-        
-        let inputs = checkInputForm();
-        console.log(inputs)
 
+
+    //Activation du click sur le bouton COMMANDER
+    let orderbtn = document.getElementById('order');
+
+    orderbtn.addEventListener("click", (e) => {
+
+        e.preventDefault()
+
+        let idProducts = JSON.parse((localStorage.getItem('products')))
+        let products = [];
+        idProducts.forEach((product) => {
+            products.push(product.id);
+        });
+
+        let contact = checkInputForm();
+        localStorage.getItem('contact',JSON.stringify(localStorage.setItem('contact',JSON.stringify(contact))));
+
+        //Objet contenant le contact et les produits du panier
+        let order = {
+            contact,
+            products,
+        }
+
+        console.log(order)
+
+        const options = {
+            method: "POST",
+            body: JSON.stringify(order),
+            headers:{
+                "Content-Type": "application/json",
+                    }
+            };
+
+         //envoi de l'objet vers le serveur
+        fetch("http://localhost:3000/api/products/order", options)
+        .then(response => response.json())
+        .then(orderResp => console.log(orderResp))
+        .catch(error => console.log(error));
+    
     })
-
+        
+   
 }
-
     
 SubmitForm ()

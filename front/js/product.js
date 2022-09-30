@@ -63,6 +63,8 @@ function addToCart(products) {
       img : products.imageUrl,
       alt : products.altTxt,
     };
+
+    console.log(productChoice)
       
     addLocalStorage(productChoice);
 
