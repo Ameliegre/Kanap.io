@@ -48,7 +48,7 @@ h2 {
 }
 .cart__item__content__settings input {
 	color: var(--footer-secondary-color);
-	font-family: 'Montserrat', sans-serif;
+	font-family: 'Montsat', sans-serif;
 	font-size: 14px;
 	border-radius: 20px;
 	border: 1px solid #767676;
@@ -129,6 +129,12 @@ h2 {
 	padding: 18px 28px;
 	cursor: pointer;
 	margin-top: 40px;
+}
+.cart__order__form__submit p {
+	margin: 0;
+	color: #fbbcbc;
+	font-size: 15px;
+	margin-left: 8px;
 }
 .cart__order__form__submit input:hover {
 	box-shadow: rgb(42 18 206 / 90%) 0 0 22px 6px;

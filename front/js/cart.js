@@ -186,7 +186,6 @@ function checkInputForm () {
         let firstNameValid = e.target.value;
         if (regFirstName.test(firstNameValid)) {
            firstNameError.innerHTML ="";
-           return true;
         } else {
             firstNameError.innerHTML =
             "Champ invalide, veuillez vérifier votre prénom.";
@@ -202,7 +201,6 @@ function checkInputForm () {
         let lastNameValid = e.target.value;
         if (regLastName.test(lastNameValid)) {
             lastNameError.innerHTML = "";
-            return true;
         } else {
             lastNameError.innerHTML =
             "Champ invalide, veuillez vérifier votre nom.";
@@ -218,7 +216,6 @@ function checkInputForm () {
         let addressValid = e.target.value;
         if (regAddress.test(addressValid)) {
             addressError.innerHTML = "";
-            return true;
         } else {
             addressError.innerHTML =
             "Champ invalide, veuillez vérifier votre adresse.";
@@ -234,7 +231,6 @@ function checkInputForm () {
         let cityValid = e.target.value;
         if (regCity.test(cityValid)) {
             cityError.innerHTML = "";
-            return true;
         } else {
             cityError.innerHTML =
             "Champ invalide, veuillez vérifier votre ville.";
@@ -250,7 +246,6 @@ function checkInputForm () {
         let emailValid = e.target.value;
         if (regEmail.test(emailValid)) {
             emailError.innerHTML = "";
-            return true;
         } else {
             emailError.innerHTML =
             "Champ invalide, veuillez vérifier votre adresse mail.";
@@ -260,7 +255,7 @@ function checkInputForm () {
     let contact = {
         firstName : firstName.value,
         lastName : lastName.value,
-        adress : address.value,
+        address : address.value,
         city : city.value,
         email : email.value,
     }
@@ -270,17 +265,15 @@ function checkInputForm () {
 
 //Activation de l'evenement Commander
 function SubmitForm () {
-    //Créer fonction qui controle si tous les elements sont bien ecrit
-    checkInputForm()
-
-
-
+    
     //Activation du click sur le bouton COMMANDER
     let orderbtn = document.getElementById('order');
-
     orderbtn.addEventListener("click", (e) => {
-
         e.preventDefault()
+        checkInputForm()
+        //Créer fonction qui controle si tous les elements sont bien ecrit
+
+        
 
         let idProducts = JSON.parse((localStorage.getItem('products')))
         let products = [];
@@ -294,28 +287,22 @@ function SubmitForm () {
         //Objet contenant le contact et les produits du panier
         let order = {
             contact,
-            products,
+            products
         }
 
-        console.log(order)
-
-        const options = {
-            method: "POST",
-            body: JSON.stringify(order),
-            headers:{
-                "Content-Type": "application/json",
-                    }
-            };
-
          //envoi de l'objet vers le serveur
-        fetch("http://localhost:3000/api/products/order", options)
+        fetch("http://localhost:3000/api/products/order", {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(order)
+        })
         .then(response => response.json())
         .then(orderResp => console.log(orderResp))
         .catch(error => console.log(error));
     
-    })
-        
-   
+    }) 
 }
     
 SubmitForm ()
