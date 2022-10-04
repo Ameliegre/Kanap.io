@@ -3,20 +3,23 @@ const cartContainer = document.getElementById('cart__items');
 
 displayCartList();
 modifyQtt();
-totalQuantity();
-sumCart();
 deleteItem();
 
 
 //Afficher les produits selectionnés
 function displayCartList () {
+
+    if (fromLocalStorage == null) {
+        alert('votre panier est vide')
+    }
         
     for (let product of fromLocalStorage) {
         const articleElement = createCartList(product);
         cartContainer.appendChild(articleElement);
     }  
-    
-    SubmitForm()
+    totalQuantity();
+    sumCart();
+    confirmationCart()
 }
 
 //Création des produits du panier dans le DOM
@@ -168,7 +171,7 @@ function deleteItem () {
                 localStorage.clear();
             }
             alert("Produit supprimé du panier");
-            sumCart ();
+            sumCart();
             totalQuantity();
         });
       }
@@ -186,6 +189,7 @@ function checkInputForm () {
         let firstNameValid = e.target.value;
         if (regFirstName.test(firstNameValid)) {
            firstNameError.innerHTML ="";
+           check = true;
         } else {
             firstNameError.innerHTML =
             "Champ invalide, veuillez vérifier votre prénom.";
@@ -201,6 +205,7 @@ function checkInputForm () {
         let lastNameValid = e.target.value;
         if (regLastName.test(lastNameValid)) {
             lastNameError.innerHTML = "";
+            check = true;
         } else {
             lastNameError.innerHTML =
             "Champ invalide, veuillez vérifier votre nom.";
@@ -216,6 +221,7 @@ function checkInputForm () {
         let addressValid = e.target.value;
         if (regAddress.test(addressValid)) {
             addressError.innerHTML = "";
+            check = true;
         } else {
             addressError.innerHTML =
             "Champ invalide, veuillez vérifier votre adresse.";
@@ -231,6 +237,7 @@ function checkInputForm () {
         let cityValid = e.target.value;
         if (regCity.test(cityValid)) {
             cityError.innerHTML = "";
+            check = true;
         } else {
             cityError.innerHTML =
             "Champ invalide, veuillez vérifier votre ville.";
@@ -246,10 +253,11 @@ function checkInputForm () {
         let emailValid = e.target.value;
         if (regEmail.test(emailValid)) {
             emailError.innerHTML = "";
+            check = true;
         } else {
             emailError.innerHTML =
             "Champ invalide, veuillez vérifier votre adresse mail.";
-        }
+        }    
     });
 
     let contact = {
@@ -264,33 +272,36 @@ function checkInputForm () {
 }
 
 //Activation de l'evenement Commander
-function SubmitForm () {
+function confirmationCart () {
+
+    checkInputForm()
     
     //Activation du click sur le bouton COMMANDER
     let orderbtn = document.getElementById('order');
     orderbtn.addEventListener("click", (e) => {
         e.preventDefault()
-        checkInputForm()
-        //Créer fonction qui controle si tous les elements sont bien ecrit
 
-        
+        if (check !== true) {
+            alert('Merci de verifier les données saisies')
+            return
+        } 
 
+        //Création Objet produits
         let idProducts = JSON.parse((localStorage.getItem('products')))
         let products = [];
         idProducts.forEach((product) => {
             products.push(product.id);
         });
-
+        //Création Objet Contact
         let contact = checkInputForm();
         localStorage.getItem('contact',JSON.stringify(localStorage.setItem('contact',JSON.stringify(contact))));
 
-        //Objet contenant le contact et les produits du panier
         let order = {
             contact,
             products
         }
-
-         //envoi de l'objet vers le serveur
+    
+        //envoi de l'objet vers le serveur
         fetch("http://localhost:3000/api/products/order", {
             method: "POST",
             headers: {
@@ -299,10 +310,15 @@ function SubmitForm () {
             body: JSON.stringify(order)
         })
         .then(response => response.json())
-        .then(orderResp => console.log(orderResp))
+        .then(orderResp => { 
+            console.log(orderResp);
+            window.location.href = `./confirmation.html?orderId=${orderResp.orderId}`;
+            localStorage.removeItem('products');
+            localStorage.removeItem('contact');
+        })
         .catch(error => console.log(error));
-    
+        
     }) 
 }
     
-SubmitForm ()
+confirmationCart()
