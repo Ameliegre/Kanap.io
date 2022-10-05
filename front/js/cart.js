@@ -193,6 +193,7 @@ function checkInputForm () {
         } else {
             firstNameError.innerHTML =
             "Champ invalide, veuillez vérifier votre prénom.";
+            check = false;
         }
     });
 
@@ -209,6 +210,7 @@ function checkInputForm () {
         } else {
             lastNameError.innerHTML =
             "Champ invalide, veuillez vérifier votre nom.";
+            check = false;
         }
     });
 
@@ -225,6 +227,7 @@ function checkInputForm () {
         } else {
             addressError.innerHTML =
             "Champ invalide, veuillez vérifier votre adresse.";
+            check = false;
         }
     });
 
@@ -241,6 +244,7 @@ function checkInputForm () {
         } else {
             cityError.innerHTML =
             "Champ invalide, veuillez vérifier votre ville.";
+            check = false;
         }
     });
 
@@ -257,6 +261,7 @@ function checkInputForm () {
         } else {
             emailError.innerHTML =
             "Champ invalide, veuillez vérifier votre adresse mail.";
+            check = false;
         }    
     });
 
@@ -281,7 +286,7 @@ function confirmationCart () {
     orderbtn.addEventListener("click", (e) => {
         e.preventDefault()
 
-        if (check !== true) {
+        if (check == false) {
             alert('Merci de verifier les données saisies')
             return
         } 
@@ -312,13 +317,10 @@ function confirmationCart () {
         .then(response => response.json())
         .then(orderResp => { 
             console.log(orderResp);
-            window.location.href = `./confirmation.html?orderId=${orderResp.orderId}`;
-            localStorage.removeItem('products');
-            localStorage.removeItem('contact');
+            //window.location.href = `./confirmation.html?orderId=${orderResp.orderId}`;
+            //localStorage.removeItem('products');
+            //localStorage.removeItem('contact');
         })
         .catch(error => console.log(error));
-        
     }) 
 }
-    
-confirmationCart()
