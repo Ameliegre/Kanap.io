@@ -5,7 +5,6 @@ displayCartList();
 modifyQtt();
 deleteItem();
 
-
 //Afficher les produits selectionnés
 function displayCartList () {
 
@@ -273,7 +272,6 @@ function checkInputForm () {
         email : email.value,
     }
     return contact;
-
 }
 
 //Activation de l'evenement Commander
@@ -299,7 +297,6 @@ function confirmationCart () {
         });
         //Création Objet Contact
         let contact = checkInputForm();
-        localStorage.getItem('contact',JSON.stringify(localStorage.setItem('contact',JSON.stringify(contact))));
 
         let order = {
             contact,
@@ -317,9 +314,8 @@ function confirmationCart () {
         .then(response => response.json())
         .then(orderResp => { 
             console.log(orderResp);
-            //window.location.href = `./confirmation.html?orderId=${orderResp.orderId}`;
-            //localStorage.removeItem('products');
-            //localStorage.removeItem('contact');
+            localStorage.removeItem('products');
+            window.location.href = `./confirmation.html?orderId=${orderResp.orderId}`;
         })
         .catch(error => console.log(error));
     }) 
