@@ -1,5 +1,6 @@
 let fromLocalStorage = JSON.parse(localStorage.getItem('products'));
 const cartContainer = document.getElementById('cart__items');
+window.check = false;
 
 displayCartList();
 modifyQtt();
@@ -7,6 +8,7 @@ deleteItem();
 
 //Afficher les produits selectionnés
 function displayCartList () {
+    
 
     if (fromLocalStorage == null) {
         alert('votre panier est vide')
@@ -105,7 +107,7 @@ function createCartList (product) {
 }
 
 //Modification de la quantité
-function modifyQtt() {
+function modifyQtt () {
     let qttModif = document.getElementsByClassName("itemQuantity");
 
     for (let j = 0; j < qttModif.length; j++) {
@@ -127,7 +129,7 @@ function modifyQtt() {
 }  
 
 // Affichage de la quantité totale d'articles
-function totalQuantity() {
+function totalQuantity () {
     let totalQuantity = document.getElementById('totalQuantity');
     let quantitiesProduct = document.querySelectorAll('.itemQuantity');
     let totalQuantities = 0;
@@ -141,8 +143,8 @@ function totalQuantity() {
 function sumCart () {  
     let listTotalPrice = [];
      
-    for (product of fromLocalStorage) {
-        priceInCart = product.price * product.quantity;
+    for (let product of fromLocalStorage) {
+        let priceInCart = product.price * product.quantity;
         listTotalPrice.push(priceInCart);
     }
     
@@ -187,8 +189,8 @@ function checkInputForm () {
     firstName.addEventListener("change", function (e) {
         let firstNameValid = e.target.value;
         if (regFirstName.test(firstNameValid)) {
-           firstNameError.innerHTML ="";
-           check = true;
+            firstNameError.innerHTML ="";
+            check = true;
         } else {
             firstNameError.innerHTML =
             "Champ invalide, veuillez vérifier votre prénom.";
