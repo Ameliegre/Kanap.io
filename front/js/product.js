@@ -1,6 +1,6 @@
 //Récupération de l'ID du produit 
 const urlSearchParams = new URLSearchParams(window.location.search);
-const id = urlSearchParams.get("id");
+let id = urlSearchParams.get("id");
 
 //Récupération des produits par ID depuis l'API HTTP
 fetch("http://localhost:3000/api/products/" + id)
@@ -10,6 +10,7 @@ fetch("http://localhost:3000/api/products/" + id)
 
 //Afficher un produit avec son détail
 function displayProductId(products) {
+  document.title = products.name;
   const logoElement = document.querySelector('.item__img');
   const imgLogoElement = document.createElement('img');
   imgLogoElement.src = products.imageUrl;
@@ -56,15 +57,9 @@ function addToCart(products) {
     let colorChoice = colors.value;
     let productChoice = {
       id : id,
-      name : products.name,
       quantity : Number(quantityChoice),
       color : colorChoice,
-      price : products.price,
-      img : products.imageUrl,
-      alt : products.altTxt,
     };
-
-    console.log(productChoice)
       
     addLocalStorage(productChoice);
 
@@ -74,7 +69,6 @@ function addToCart(products) {
 //Importation dans le local storage 
 function addLocalStorage (productChoice) {
   let productInLocalStorage = JSON.parse(localStorage.getItem('products'));
-  console.log(productInLocalStorage);
 
   // si le panier est vide 
   if (productInLocalStorage === null) {

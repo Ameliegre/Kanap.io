@@ -7,7 +7,6 @@ fetch("http://localhost:3000/api/products")
 //Affichage des canapés 
 function displayProductList (products) {
     const productContainer = document.getElementById('items');
-    console.log(products);
     for (let product of products) {
         const linkElement = createProductListElement(product);
         productContainer.appendChild(linkElement);

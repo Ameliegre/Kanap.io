@@ -1,30 +1,35 @@
+"user strict";
 let fromLocalStorage = JSON.parse(localStorage.getItem('products'));
 const cartContainer = document.getElementById('cart__items');
-window.check = false;
+console.log(cartContainer)
 
-displayCartList();
-modifyQtt();
-deleteItem();
+displayCartList()
 
-//Afficher les produits selectionnés
 function displayCartList () {
-    
-    if (fromLocalStorage == null) {
-        alert('votre panier est vide')
+
+    if (fromLocalStorage === null) {
+        alert('Votre panier est vide')
+
+    } else {
+
+        for (let product of fromLocalStorage) {
+            //Récupération des produits depuis l'API HTTP
+            fetch("http://localhost:3000/api/products/" + product.id)
+            .then(response => response.json())
+            .then(products => {
+                createCartList(products,product)
+                totalQuantity ();
+                modifyQtt ();
+                deleteItem ();
+                confirmationCart()
+            })
+        } 
+
     }
-        
-    for (let product of fromLocalStorage) {
-        const articleElement = createCartList(product);
-        cartContainer.appendChild(articleElement);
-    }  
-    totalQuantity();
-    sumCart();
-    confirmationCart()
+
 }
 
-//Création des produits du panier dans le DOM
-function createCartList (product) {
-
+function createCartList (products,product) {
     // Body 
     const articleElement = document.createElement("article");
     articleElement.classList.add('cart__item');
@@ -32,30 +37,27 @@ function createCartList (product) {
     articleElement.setAttribute("data-color",product.color);
     cartContainer.appendChild(articleElement);
 
-
     // Image
     const imgContainer = document.createElement("div");
     imgContainer.classList.add('cart__item__img');
     articleElement.appendChild(imgContainer);
     
     const imgElement = document.createElement('img');
-    imgElement.src = product.img;
-    imgElement.alt = product.alt;
+    imgElement.src = products.imageUrl;
+    imgElement.alt = products.altTxt;
     imgContainer.appendChild(imgElement);
-
 
     // Body Contenu
     const itemContainer = document.createElement("div");
     itemContainer.classList.add('cart__item__content');
     articleElement.appendChild(itemContainer);
 
-
         //Description
     const descContainer = document.createElement("div");
     descContainer.classList.add('cart__item__content__description');
     itemContainer.appendChild(descContainer);
     const titleItem = document.createElement("h2");
-    titleItem.innerHTML = product.name;
+    titleItem.innerHTML = products.name;
     descContainer.appendChild(titleItem);
 
     const colorItem = document.createElement("p");
@@ -63,16 +65,14 @@ function createCartList (product) {
     descContainer.appendChild(colorItem);
 
     const priceItem = document.createElement("p");
-    priceItem.innerHTML = product.price + ",00 €";
+    priceItem.innerHTML = products.price + ",00 €";
     descContainer.appendChild(priceItem);
-
 
         //Body Reglages 
     const settingContainer = document.createElement("div");
     settingContainer.classList.add('cart__item__content__settings');
     itemContainer.appendChild(settingContainer);
         
-    
         // Reglages Quantité
     const quantityContainer = document.createElement("div");
     quantityContainer.classList.add('cart__item__content__settings__quantity');
@@ -91,7 +91,6 @@ function createCartList (product) {
     inputQuantity.setAttribute("value",product.quantity);
     quantityContainer.appendChild(inputQuantity);
 
-
         //Reglages Suppression
     const deleteContainer = document.createElement("div");
     deleteContainer.classList.add('cart__item__content__settings__delete');
@@ -102,7 +101,6 @@ function createCartList (product) {
     deleteItem.innerHTML = "Supprimer";
     deleteContainer.appendChild(deleteItem);
 
-    return articleElement;
 }
 
 //Modification de la quantité
@@ -121,7 +119,6 @@ function modifyQtt () {
                 productToUpdate.quantity = Math.max(qttModif[j].valueAsNumber,1);
                 localStorage.setItem("products",JSON.stringify(fromLocalStorage));
             }
-            sumCart ();
             totalQuantity();
         })
     }
@@ -136,21 +133,6 @@ function totalQuantity () {
         totalQuantities += Number(qte.value);
     })
     return totalQuantity.innerHTML = totalQuantities;
-}
-
-// Affichage du prix total d'articles
-function sumCart () {  
-    let listTotalPrice = [];
-     
-    for (let product of fromLocalStorage) {
-        let priceInCart = product.price * product.quantity;
-        listTotalPrice.push(priceInCart);
-    }
-    
-    const reducer = (accumulator, currentValue) => accumulator + currentValue;
-    const totalPrice = listTotalPrice.reduce(reducer,0);
-    const totalPriceElement = document.getElementById('totalPrice');
-    totalPriceElement.innerHTML = totalPrice;
 }
 
 // Suppression d'un produit
@@ -171,7 +153,6 @@ function deleteItem () {
                 localStorage.clear();
             }
             alert("Produit supprimé du panier");
-            sumCart();
             totalQuantity();
         });
       }
