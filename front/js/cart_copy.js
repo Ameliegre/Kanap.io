@@ -5,6 +5,7 @@ const cartContainer = document.getElementById('cart__items');
 
 setCartEvents().then()
 
+//Afficher les produits selectionnés
 async function displayCartList() {
   
     for (let productLocal of fromLocalStorage) {
@@ -26,10 +27,10 @@ async function setCartEvents() {
     totalQuantity();
     modifyQtt();
     deleteItem();
-    confirmationCart();
     sumCart();
 }
 
+//Création des produits du panier dans le DOM
 function createCartList(product) {
     
     // Body 
@@ -190,144 +191,157 @@ function deleteItem() {
 // Validation données formulaire
 function checkInputForm() {
 
+    let check = true;
+
     //Verification de la saisie du prénom
     let firstName = document.getElementById('firstName');
     let firstNameError = document.getElementById('firstNameErrorMsg');
-    let regFirstName = /^[^<>0-9]{3,20}$/;
+    let regFirstName = /^[A-Za-zâêîôûäëïöüÄËÏÖÜÂÊÎÔÛéèà\s]{3,50}$/;
 
-    firstName.addEventListener("input", function (e) {
-        let firstNameValid = e.target.value;
-        if (regFirstName.test(firstNameValid)) {
-            firstNameError.innerHTML ="";
-            check = true;
-        } else {
-            firstNameError.innerHTML =
-            "Champ invalide, veuillez vérifier votre prénom.";
-            check = false;
-        }
-    });
+    let firstNameValid = firstName.value;
+    if (regFirstName.test(firstNameValid)) {
+        firstNameError.innerHTML ="";
+    } else {
+        check = false;
+        firstNameError.innerHTML =
+        "Champ invalide, veuillez vérifier votre prénom.";
+    }
+    
 
     //Verification de la saisie du nom
     let lastName = document.getElementById('lastName');
     let lastNameError = document.getElementById('lastNameErrorMsg');
-    let regLastName = /^[^<>0-9]{3,20}$/;
+    let regLastName = /^[A-Za-zâêîôûäëïöüÄËÏÖÜÂÊÎÔÛéèà\s]{3,50}$/;
 
-    lastName.addEventListener("input", function (e) {
-        let lastNameValid = e.target.value;
-        if (regLastName.test(lastNameValid)) {
-            lastNameError.innerHTML = "";
-            check = true;
-        } else {
-            lastNameError.innerHTML =
-            "Champ invalide, veuillez vérifier votre nom.";
-            check = false;
-        }
-    });
+    let lastNameValid = lastName.value;
+    if (regLastName.test(lastNameValid)) {
+        lastNameError.innerHTML = "";
+    } else {
+        check = false;
+        lastNameError.innerHTML =
+        "Champ invalide, veuillez vérifier votre nom.";
+        
+    }
 
     //Verification de la saisie de l'adresse postale
     let address = document.getElementById('address');
     let addressError = document.getElementById('addressErrorMsg');
     let regAddress = /^[^<>]{5,50}$/;
 
-    address.addEventListener("input", function (e) {
-        let addressValid = e.target.value;
-        if (regAddress.test(addressValid)) {
-            addressError.innerHTML = "";
-            check = true;
-        } else {
-            addressError.innerHTML =
-            "Champ invalide, veuillez vérifier votre adresse.";
-            check = false;
-        }
-    });
+    let addressValid = address.value;
+    if (regAddress.test(addressValid)) {
+        addressError.innerHTML = "";
+    } else {
+        check = false;
+        addressError.innerHTML =
+        "Champ invalide, veuillez vérifier votre adresse.";
+        
+    }
 
     //Verification de la saisie de la ville
     let city = document.getElementById('city');
     let cityError = document.getElementById('cityErrorMsg');
-    let regCity = /^[^<>0-9]{2,30}$/;
+    let regCity = /^[A-Za-zâêîôûäëïöüÄËÏÖÜÂÊÎÔÛéèà\s]{3,50}$/;
 
-    city.addEventListener("input", function (e) {
-        let cityValid = e.target.value;
-        if (regCity.test(cityValid)) {
-            cityError.innerHTML = "";
-            check = true;
-        } else {
-            cityError.innerHTML =
-            "Champ invalide, veuillez vérifier votre ville.";
-            check = false;
-        }
-    });
+    let cityValid = city.value;
+    if (regCity.test(cityValid)) {
+        cityError.innerHTML = "";
+    } else {
+        check = false;
+        cityError.innerHTML =
+        "Champ invalide, veuillez vérifier votre ville.";
+        
+    }
 
     //Verification de la saisie de l'adresse mail
     let email = document.getElementById('email');
     let emailError = document.getElementById('emailErrorMsg');
     let regEmail = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
-    email.addEventListener("input", function (e) {
-        let emailValid = e.target.value;
-        if (regEmail.test(emailValid)) {
-            emailError.innerHTML = "";
-            check = true;
-        } else {
-            emailError.innerHTML =
-            "Champ invalide, veuillez vérifier votre adresse mail.";
-            check = false;
-        }    
+    let emailValid = email.value;
+    if (regEmail.test(emailValid)) {
+        emailError.innerHTML = "";
+    } else {
+        check = false;
+        emailError.innerHTML =
+        "Champ invalide, veuillez vérifier votre adresse mail.";
+        
+    }    
+
+    return check
+}
+
+//Définition de la fonction postAPI qui va envoyer l'objet "body" contenant les informations de l'utilisateur  => addresse + id des produits commandés et nous retourne l'id de la commande 
+function postApi(body){
+    fetch("http://localhost:3000/api/products/order",{
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: {
+        "Content-Type" : "application/json",
+      }
+    })
+    .then(response => response.json())
+    .then(response => {
+      let cart = []
+      localStorage.setItem('products',JSON.stringify(cart))
+      window.location.href = `./confirmation.html?orderId=${response.orderId}`
+    })
+    .catch(function(error){
+      console.error(error)
     });
-
-    let contact = {
-        firstName : firstName.value,
-        lastName : lastName.value,
-        address : address.value,
-        city : city.value,
-        email : email.value,
+}
+  
+//Définition de la fonction requestBody qui va récuperer les valeurs des champs du formulaire pour mettre les informations dans un objet qui sera transmit à l'API
+function requestBody(){
+  
+    const firstNameInput = document.querySelector('#firstName')
+    const firstName = firstNameInput.value
+  
+    const lastNameInput = document.querySelector('#lastName')
+    const lastName = lastNameInput.value
+  
+    const addressInput = document.querySelector('#address')
+    const address = addressInput.value
+  
+    const cityInput = document.querySelector('#city')
+    const city = cityInput.value
+  
+    const emailInput = document.querySelector('#email')
+    const email = emailInput.value
+  
+    //Boucle pour mettre les id des produits selectionnés dans le panier
+    let idProducts  = [];
+    for (let i = 0; i < fromLocalStorage.length; i++){
+      for (let number = fromLocalStorage[i].quantity; number>0; number--){
+        idProducts.push(fromLocalStorage[i].id)
+      }
     }
-    return contact;
-}
-
-//Activation de l'evenement Commander
-function confirmationCart() {
-
-    checkInputForm()
     
-    //Activation du click sur le bouton COMMANDER
-    let orderbtn = document.getElementById('order');
-    orderbtn.addEventListener("click", (e) => {
-        e.preventDefault()
+    const body = { 
+      contact: {
+      firstName: firstName,
+      lastName: lastName,
+      address: address,
+      city: city,
+      email: email
+    },
+    products : idProducts,
+    }
+    return body
+};
+  
+  //Définition de la fonction submitForm qui permet de récuperer les informations entrées par l'utilisateur dans le formulaire, va vérifier si celles-ci sont correctes et va transmettre à l'API puis récuperer le numéro de commande dans la réponse de l'API 
+function submitForm(e){
+    e.preventDefault();
+    if (fromLocalStorage.length === 0){
+      alert('Vous ne pouvez passer une commande avec un panier vide')
+    }else{
+      if(checkInputForm()){
+        postApi(requestBody())
+      };
+    }
+};
 
-        if (check == false) {
-            alert('Merci de verifier les données saisies')
-            return
-        } 
-
-        //Création Objet produits
-        let idProducts = JSON.parse((localStorage.getItem('products')))
-        let products = [];
-        idProducts.forEach((product) => {
-            products.push(product.id);
-        });
-        //Création Objet Contact
-        let contact = checkInputForm();
-
-        let order = {
-            contact,
-            products
-        }
-    
-        //envoi de l'objet vers le serveur
-        fetch("http://localhost:3000/api/products/order", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(order)
-        })
-        .then(response => response.json())
-        .then(orderResp => { 
-            console.log(orderResp);
-            localStorage.removeItem('products');
-            window.location.href = `./confirmation.html?orderId=${orderResp.orderId}`;
-        })
-        .catch(error => console.log(error));
-    }) 
-}
+//Lorsque l'utilisateur clique sur le bouton commander, on appelle la fonction submitForm
+const submitBtn = document.getElementById('order')
+submitBtn.addEventListener("click", (e) => submitForm(e))
