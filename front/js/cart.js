@@ -121,7 +121,7 @@ function modifyQtt () {
                 productToUpdate.quantity = Math.max(qttModif[j].valueAsNumber,1);
                 localStorage.setItem("products",JSON.stringify(fromLocalStorage));
             }
-            sumCart ();
+            sumCart();
             totalQuantity();
         })
     }
