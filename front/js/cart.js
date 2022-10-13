@@ -1,4 +1,4 @@
-"user strict";
+
 let fromLocalStorage = JSON.parse(localStorage.getItem('products'));
 let productsFromApi = [];
 const cartContainer = document.getElementById('cart__items');
@@ -109,44 +109,27 @@ function createCartList(product) {
 //Modification de la quantité
 function modifyQtt() {
     let qttModif = document.querySelectorAll(".itemQuantity");
-
     for (let k = 0; k < qttModif.length; k++){
         qttModif[k].addEventListener("change" , (event) => {
             event.preventDefault();
-
-            // Selection de l'element à modifier en fonction de son id ET sa couleur
-            let quantityModif = fromLocalStorage[k].quantity;
+            //Selection de l'element suivant l'ordre dans le tableau du localstorage
             let qttModifValue = qttModif[k].valueAsNumber;
-            
-            // Correction 1 : dans le cas ou une valeur inférieur à 1 ou supérieur à 100 est renseigné
-            if(qttModifValue > 0 && qttModifValue <= 100){
-                const resultFind = fromLocalStorage.find((el) => el.qttModifValue !== quantityModif);
-
-                resultFind.quantity = qttModifValue;
-                fromLocalStorage[k].quantity = resultFind.quantity;
-
-                localStorage.setItem("products", JSON.stringify(fromLocalStorage));
-            
-            } else {
-                window.alert("Veuillez selectionner une valeur comprise entre 1 et 100");
-            } 
-
-            totalQuantity()
-            sumCart()
+            fromLocalStorage[k].quantity = qttModifValue;
+            localStorage.setItem("products", JSON.stringify(fromLocalStorage));
+            sumCart();
+            totalQuantity();
         })
     }
 }
 
 
-
 // Affichage de la quantité totale d'articles
 function totalQuantity() {
     let totalQuantityElt = document.getElementById('totalQuantity');
-    let quantitiesProduct = document.querySelectorAll('.itemQuantity');
     let totalQuantities = 0;
-    quantitiesProduct.forEach(qte =>{
-        totalQuantities += Number(qte.value);
-    })
+    for (let i = 0; i < fromLocalStorage.length; i++){
+        totalQuantities += Number(fromLocalStorage[i].quantity);
+    }
 
     return totalQuantityElt.innerHTML = totalQuantities;
 }
@@ -176,16 +159,13 @@ function sumCart() {
 function deleteItem() {
     const btnDeletes = document.getElementsByClassName("deleteItem");
 
-    //for (let i = 0; i < btnDelete.length; i++) {
-    for (let btnDelete of btnDeletes ) {    
+    for (let i = 0; i < btnDeletes.length; i++) {  
+        let btnDelete =  btnDeletes[i];
         btnDelete.addEventListener("click", () => {
-    
-          let findArticle = btnDelete.closest("article");
-          let productToDelete = fromLocalStorage.indexOf(fromLocalStorage);
-          fromLocalStorage.splice(productToDelete, 1);
-          findArticle.remove();
-
-         if (localStorage != undefined) {
+            let findArticle = btnDelete.closest("article");
+            fromLocalStorage.splice(i, 1);
+            findArticle.remove();
+            if (localStorage != undefined) {
                 localStorage.setItem("products",JSON.stringify(fromLocalStorage));
             } else {
                 localStorage.clear();
@@ -193,6 +173,7 @@ function deleteItem() {
             alert("Produit supprimé du panier");
             totalQuantity();
             sumCart();
+            location.reload();
         });
       } 
 }
